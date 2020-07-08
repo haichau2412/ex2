@@ -1,7 +1,7 @@
 import { v4 } from "uuid";
 
 export const initialState = {
-  users: [{ name: "sss", phone: 447, password: "777" }],
+  users: [],
 };
 
 export const createNewUser = ({ password, username, phone }) => {

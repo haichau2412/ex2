@@ -19,6 +19,13 @@ const reducers = (state = initialState, action) => {
         ...state,
         ...action.payload,
       };
+
+    case actionTypes.logout:
+      return {
+        ...state,
+        authenticated: false,
+        currentUser: "",
+      };
     default:
       return state;
   }

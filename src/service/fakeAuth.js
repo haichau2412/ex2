@@ -23,3 +23,8 @@ export const fetchFakeSignUp = (data, { username }) => {
     }, 2000);
   });
 };
+
+export default {
+  login: fetchFakeAuth,
+  signup: fetchFakeSignUp,
+};

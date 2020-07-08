@@ -1,21 +1,31 @@
-import React, { useEffect } from "react";
-import "./App.css";
-import {
-  sendLoginRequest,
-  sendSignupRequest,
-} from "./redux/authentication/actions";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import Auth from "./containers/auth/Auth";
+import { Route, Switch, Redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Users from "./containers/userdashboard/Users";
+
+const getAuthenticated = (state) => state.auth.authenticated;
 
 function App() {
-  const dispatch = useDispatch();
+  const authenticated = useSelector(getAuthenticated);
+  return (
+    <>
+      <Switch>
+        <Route exact path='/'>
+          <Auth authenticated={authenticated} />
+        </Route>
+        {authenticated ? (
+          <Route exact path='/users'>
+            <Users />
+          </Route>
+        ) : (
+          <Redirect exact from='/users' to='/' />
+        )}
 
-  const data = useSelector((state) => state);
-
-  console.log(data);
-  useEffect(() => {
-    dispatch(sendSignupRequest({ username: "aaabbc  ", password: "xxx" }));
-  }, [dispatch]);
-  return <>AAAA</>;
+        <Route path='*' render={() => <div> 404 </div>} />
+      </Switch>
+    </>
+  );
 }
 
 export default App;

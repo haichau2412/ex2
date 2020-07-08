@@ -1,35 +1,32 @@
 const validateUsername = (username) => {
-  let errors = {};
   if (!username) {
-    errors.username = "Required";
+    return "Required";
   } else if (/[^\d\w]/.test(username)) {
-    errors.username = "Special characters are not allowed ";
+    return "Special characters are not allowed ";
   }
-  return errors;
+  return true;
 };
 
 const validatePassword = (password) => {
-  let errors = {};
   if (!password) {
-    errors.password = "Required";
+    return "Required";
   } else if (password.length < 6) {
-    errors.password = "Password must have at least 6 characters";
+    return "Password must have at least 6 characters";
   }
-  return errors;
+  return true;
 };
 
 const validatePhone = (phone) => {
-  let errors = {};
   if (!phone) {
-    errors.phone = "Required";
+    return "Required";
   } else if (
     !/(^(056|058|059|03[2-9]|09[0-4]|09[6-9]|08[1-9]|070|07[6-9])){1}[0-9]{7}$/g.test(
       phone
     )
   ) {
-    errors.phone = "Invalid phone number";
+    return "Invalid phone number";
   }
-  return errors;
+  return true;
 };
 
 const validator = {
@@ -39,11 +36,13 @@ const validator = {
 };
 
 const validateData = (data) => {
-  const errors = Object.keys(data).reduce((error, field) => {
-    return { ...error, ...validator[field](data[field]) };
+  return Object.keys(data).reduce((error, field) => {
+    const fieldError = validator[field](data[field]);
+    if (typeof fieldError !== "boolean") {
+      error[field] = fieldError;
+    }
+    return error;
   }, {});
-  return {
-    errors,
-  };
 };
+
 export default validateData;

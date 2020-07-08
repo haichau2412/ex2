@@ -5,6 +5,7 @@ export const signup = "SIGN_UP";
 export const authenticating = "AUTHENTICATING";
 export const onSuccess = "SUCCESS";
 export const onFailure = "FAILURE";
+export const logout = "LOG_OUT";
 
 const setAuthenticating = ({ username }) => {
   return {
@@ -47,6 +48,7 @@ const addNewUser = (data) => {
 };
 
 export const sendLoginRequest = (authInfo) => {
+  console.log(authInfo);
   return async (dispatch, getState) => {
     dispatch(setAuthenticating({ ...authInfo }));
     try {
@@ -59,6 +61,7 @@ export const sendLoginRequest = (authInfo) => {
 };
 
 export const sendSignupRequest = (authInfo) => {
+  console.log(authInfo);
   return async (dispatch, getState) => {
     dispatch(setAuthenticating({ ...authInfo }));
     try {
@@ -71,4 +74,9 @@ export const sendSignupRequest = (authInfo) => {
       return dispatch(failure());
     }
   };
+};
+
+export const sendRequest = {
+  login: sendLoginRequest,
+  signup: sendSignupRequest,
 };

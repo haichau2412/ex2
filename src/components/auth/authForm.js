@@ -1,54 +1,102 @@
-import React from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useFormik } from "formik";
-import { Form, Input } from "antd";
 import validate from "./validators";
+import {
+  FormTitle,
+  InputField,
+  Input,
+  Button,
+  FormContainer,
+  Wrapper,
+  ErrorDiv,
+  NavLink,
+} from "./styles";
+import { useDispatch } from "react-redux";
+import { sendRequest } from "../../redux/authentication/actions";
 import { initialValues } from "./ultilities";
-import FormItem from "antd/lib/form/FormItem";
+import PropTypes from "prop-types";
 
-const LoginForm = ({ type }) => {
-  const formik = useFormik({
-    initialValues: initialValues[type],
-    onSubmit: (values) => {
-      console.log(values);
+const AuthForm = ({ type, changeType }) => {
+  const dispatch = useDispatch();
+
+  const submitForm = useCallback(
+    (values) => {
+      dispatch(sendRequest[type](values));
     },
+    [type, dispatch]
+  );
+
+  const formInitialValues = useMemo(() => initialValues[type], [type]);
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: formInitialValues,
+    onSubmit: submitForm,
     validate,
   });
 
-  const {
-    errors,
-    handleChange,
-    // handleSubmit,
-    values,
-  } = formik;
+  const { errors, handleChange, handleSubmit, values } = formik;
 
   return (
-    <Form>
-      <FormItem label='Username' />
-      <Input
-        name='username'
-        onChange={handleChange}
-        value={values.username}
-        placeholder='username'
-      />
-      <p>{errors.username}</p>
-      <FormItem label='Password' name='password' />
-      <Input.Password
-        type
-        name='password'
-        onChange={handleChange}
-        value={values.password}
-        placeholder='password'
-      />
-      <p>{errors.password}</p>
-      {type === "signup" ? (
-        <>
-          <FormItem label='Phone' name='phone' />
-          <Input name='phone' onChange={handleChange} value={values.phone} />
-          <p>{errors.phone}</p>
-        </>
-      ) : null}
-    </Form>
+    <Wrapper>
+      <FormContainer>
+        <FormTitle>{type === "signup" ? "Sign up" : "Log in"}</FormTitle>
+        <NavLink onClick={changeType}>
+          {type === "signup"
+            ? "Have account ? Please log in"
+            : "No account ? Please sign up"}
+        </NavLink>
+        <form onSubmit={handleSubmit}>
+          <InputField>
+            <Input
+              autocomplete='username'
+              type='text'
+              name='username'
+              onChange={handleChange}
+              value={values.username}
+              placeholder='username'
+            />
+            <ErrorDiv>{errors.username}</ErrorDiv>
+          </InputField>
+          <InputField>
+            <Input
+              autocomplete={
+                type === "signup" ? "new-password" : "current-password"
+              }
+              type='password'
+              name='password'
+              onChange={handleChange}
+              value={values.password}
+              placeholder='password'
+            />
+            <ErrorDiv>{errors.password}</ErrorDiv>
+          </InputField>
+          {type === "signup" ? (
+            <>
+              <InputField>
+                <Input
+                  name='phone'
+                  type='text'
+                  onChange={handleChange}
+                  value={values.phone}
+                  placeholder='phone'
+                />
+                <ErrorDiv>{errors.phone}</ErrorDiv>
+              </InputField>
+            </>
+          ) : null}
+
+          <Button type='submit' style={{ textTransform: "uppercase" }}>
+            {type === "signup" ? "Sign up" : "Log in"}
+          </Button>
+        </form>
+      </FormContainer>
+    </Wrapper>
   );
 };
 
-export default LoginForm;
+export default AuthForm;
+
+AuthForm.propTypes = {
+  type: PropTypes.oneOf(["signup", "login"]).isRequired,
+};
