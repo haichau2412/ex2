@@ -9,6 +9,12 @@ const color = {
 export const StyledAlert = styled.div`
   position: fixed;
   top: 1rem;
+  right: 0;
+  left: 0;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
+  width: 50%;
   padding: 1rem;
   border: 2px solid ${(props) => color[props.type]};
   background-color: #fff;

@@ -7,7 +7,7 @@ export const fetchFakeAuth = (data, { username, password }) => {
       if (isValid) {
         return resolve(true);
       }
-      throw new Error("Wrong username or password");
+      reject("Username or password is incorrect");
     }, 2000);
   });
 };
@@ -19,7 +19,7 @@ export const fetchFakeSignUp = (data, { username }) => {
       if (!isExist) {
         return resolve(true);
       }
-      return reject(false);
+      return reject("Username exists");
     }, 2000);
   });
 };

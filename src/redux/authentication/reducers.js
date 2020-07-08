@@ -7,6 +7,7 @@ const reducers = (state = initialState, action) => {
       return {
         ...state,
         ...action.payload,
+        error: "",
       };
     }
     case actionTypes.onSuccess:
@@ -25,7 +26,14 @@ const reducers = (state = initialState, action) => {
         ...state,
         authenticated: false,
         currentUser: "",
+        error: "",
       };
+    case actionTypes.resetError:
+      return {
+        ...state,
+        error: "",
+      };
+
     default:
       return state;
   }

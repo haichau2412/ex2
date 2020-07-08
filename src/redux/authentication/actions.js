@@ -6,6 +6,7 @@ export const authenticating = "AUTHENTICATING";
 export const onSuccess = "SUCCESS";
 export const onFailure = "FAILURE";
 export const logout = "LOG_OUT";
+export const resetError = "RESET_ERROR";
 
 const setAuthenticating = ({ username }) => {
   return {
@@ -27,13 +28,14 @@ const success = () => {
   };
 };
 
-const failure = () => {
+const failure = (error) => {
   return {
     type: "FAILURE",
     payload: {
       isAuthenticating: false,
       authenticated: false,
       currentUser: "",
+      error,
     },
   };
 };
@@ -48,20 +50,19 @@ const addNewUser = (data) => {
 };
 
 export const sendLoginRequest = (authInfo) => {
-  console.log(authInfo);
   return async (dispatch, getState) => {
     dispatch(setAuthenticating({ ...authInfo }));
     try {
       await fetchFakeAuth(getState().usr.users, { ...authInfo });
       return dispatch(success());
-    } catch (e) {
-      return dispatch(failure());
+    } catch (error) {
+      console.log(error);
+      return dispatch(failure(error));
     }
   };
 };
 
 export const sendSignupRequest = (authInfo) => {
-  console.log(authInfo);
   return async (dispatch, getState) => {
     dispatch(setAuthenticating({ ...authInfo }));
     try {
@@ -70,8 +71,8 @@ export const sendSignupRequest = (authInfo) => {
         dispatch(success());
         dispatch(addNewUser(authInfo));
       })();
-    } catch (e) {
-      return dispatch(failure());
+    } catch (error) {
+      return dispatch(failure(error));
     }
   };
 };
