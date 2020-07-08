@@ -3,13 +3,15 @@ import useClickoutside from "./useClickoutside";
 import { StyledAlert } from "./AlertStyle";
 import { useSelector, useDispatch } from "react-redux";
 
-const getError = (state) => state.auth.error;
+const getError = (state) => {
+  console.log("redux change");
+  return state.auth.error;
+};
 
-const AddAlertHandler = ({ children }) => {
+const Alert = () => {
   const [show, setShow] = useState(false);
   const dispatch = useDispatch();
   const error = useSelector(getError);
-
   const alertRef = useRef();
   useClickoutside(alertRef, () => setShow(false));
 
@@ -18,6 +20,8 @@ const AddAlertHandler = ({ children }) => {
     if (error !== "") {
       setShow(true);
       timer = setTimeout(() => setShow(false), 2000);
+    } else {
+      setShow(false);
     }
     return () => {
       clearTimeout(timer);
@@ -35,9 +39,8 @@ const AddAlertHandler = ({ children }) => {
       <StyledAlert type='warning' ref={alertRef} show={show}>
         {error}
       </StyledAlert>
-      {children}
     </>
   );
 };
 
-export default AddAlertHandler;
+export default Alert;
