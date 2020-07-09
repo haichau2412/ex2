@@ -18,7 +18,7 @@ import PropTypes from "prop-types";
 
 const AuthForm = ({ type, changeType }) => {
   const dispatch = useDispatch();
-  console.log("AuthForm");
+
   const submitForm = useCallback(
     (values) => {
       dispatch(sendRequest[type](values));
