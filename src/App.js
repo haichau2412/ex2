@@ -2,7 +2,7 @@ import React from "react";
 import Auth from "./containers/auth/Auth";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Users from "./containers/userdashboard/Users";
+import UserDashBoard from "./containers/userdashboard/UserDashBoard";
 
 const getAuthenticated = (state) => state.auth.authenticated;
 
@@ -16,7 +16,7 @@ function App() {
         </Route>
         {authenticated ? (
           <Route exact path='/users'>
-            <Users />
+            <UserDashBoard />
           </Route>
         ) : (
           <Redirect exact from='/users' to='/' />

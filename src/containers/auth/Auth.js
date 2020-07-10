@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FormContainer } from "./style";
 import { useHistory } from "react-router-dom";
-import AuthForm from "../../components/auth/authForm";
+import AuthForm from "../../components/auth/AuthForm";
 import Alert from "../../components/ultilities/Alert";
 
 const Auth = ({ authenticated }) => {

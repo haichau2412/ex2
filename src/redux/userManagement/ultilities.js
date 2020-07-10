@@ -28,14 +28,27 @@ export const deleteItemAtIndex = (array, index) => {
 export const addUser = (users, data) => {
   let cloneUsers = createCloneArray(users);
   const newUser = createNewUser({ ...data });
-  cloneUsers.push(newUser);
+
+  if (cloneUsers.findIndex((user) => user.username === data.username) === -1) {
+    cloneUsers.push(newUser);
+  }
+  return { users: cloneUsers };
+};
+
+export const addUserFromServer = (users, data) => {
+  let cloneUsers = createCloneArray(users);
+  cloneUsers.push(data);
   return { users: cloneUsers };
 };
 
 export const editUser = (users, data) => {
   let cloneUsers = createCloneArray(users);
-  const userIndex = cloneUsers.find((user) => user.id === data.id);
-  if (!userIndex) {
+  const userIndex = cloneUsers.findIndex((user) => user.id === data.id);
+  const usernameIndex = cloneUsers.findIndex(
+    (user) => user.username === data.username
+  );
+
+  if (userIndex === -1 || usernameIndex !== -1) {
     return { users };
   }
   cloneUsers[userIndex] = { ...cloneUsers[userIndex], ...data };
@@ -43,8 +56,8 @@ export const editUser = (users, data) => {
 };
 
 export const deleteUser = (users, { id }) => {
-  const userIndex = users.find((user) => user.id === id);
-  if (!userIndex) {
+  const userIndex = users.findIndex((user) => user.id === id);
+  if (userIndex === -1) {
     return { users };
   } else {
     return deleteItemAtIndex(users, userIndex);

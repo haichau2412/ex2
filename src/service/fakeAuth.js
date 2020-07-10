@@ -1,23 +1,26 @@
+import { createNewUser } from "../redux/userManagement/ultilities";
+
 export const fetchFakeAuth = (data, { username, password }) => {
   return new Promise((resolve, reject) => {
-    const isValid = data.find(
+    const user = data.find(
       (user) => user.username === username && user.password === password
     );
     setTimeout(() => {
-      if (isValid) {
-        return resolve(true);
+      if (user) {
+        return resolve({ status: true, id: user.id });
       }
       reject("Username or password is incorrect");
     }, 2000);
   });
 };
 
-export const fetchFakeSignUp = (data, { username }) => {
+export const fetchFakeSignUp = (data, authInfo) => {
   return new Promise((resolve, reject) => {
-    const isExist = data.find((user) => user.username === username);
+    const isExist = data.find((user) => user.username === authInfo.username);
     setTimeout(() => {
       if (!isExist) {
-        return resolve(true);
+        const newUser = createNewUser(authInfo);
+        return resolve({ status: true, newUser });
       }
       return reject("Username exists");
     }, 2000);
