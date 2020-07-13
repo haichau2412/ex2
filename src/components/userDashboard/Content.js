@@ -1,15 +1,19 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Table, Space, Button } from "antd";
-import { checkDeleteCurrentUser } from "../../redux/userManagement/actions";
-import useAddSearch from "./dataTable/useAddSearch";
+
+import useAddSearch from "./TableUltilities/useAddSearch";
 import { Layout } from "antd";
 import CreateUserModal from "./addModal/CreateUserModal";
 import useEditModalHook from "./editModal/useEditModalHook";
-import CreateEditModal from "./editModal/CreateEditModal";
+import useDeleteModal from "./deleteModal/useDeleteModal";
+import EditModal from "./editModal/EditModal";
+import DeleteModal from "./deleteModal/DeleteModal";
 
 const { Content } = Layout;
 const { Column } = Table;
+
+const getCurrentUserId = (state) => state.auth.currentUserId;
 
 const formatDate = (createAt) => {
   const date = new Date(createAt);
@@ -24,18 +28,15 @@ const getUsersData = (state) =>
   }));
 
 const UserContent = () => {
-  const dispatch = useDispatch();
-  const {
-    handleCancel,
-    handleOk,
-    handleClick,
-    userId,
-    isVisible,
-  } = useEditModalHook();
+  const editUltilities = useEditModalHook();
+
+  const deleteUltilities = useDeleteModal();
 
   const users = useSelector(getUsersData);
 
   const getColumnSearchProps = useAddSearch();
+
+  const currentLoginUserId = useSelector(getCurrentUserId);
 
   return (
     <Content
@@ -47,9 +48,8 @@ const UserContent = () => {
       }}
     >
       <CreateUserModal />
-      <CreateEditModal
-        cockpit={{ handleOk, handleCancel, userId, isVisible }}
-      />
+      <EditModal cockpit={{ ...editUltilities }} />
+      <DeleteModal cockpit={{ ...deleteUltilities }}></DeleteModal>
       <Table dataSource={users}>
         <Column
           title='Username'
@@ -77,12 +77,37 @@ const UserContent = () => {
           key='action'
           render={(text, record) => (
             <Space size='middle'>
-              <Button onClick={() => handleClick(record.key)}>Edit</Button>
-              <Button
-                onClick={() => dispatch(checkDeleteCurrentUser(record.key))}
-              >
-                Remove user
-              </Button>
+              {currentLoginUserId !== record.key ? (
+                <Button
+                  onClick={() =>
+                    editUltilities.handleClick({
+                      userId: record.key,
+                      username: record.username,
+                      phone: record.phone,
+                    })
+                  }
+                >
+                  Edit
+                </Button>
+              ) : (
+                <Button disabled>Edit</Button>
+              )}
+
+              {currentLoginUserId !== record.key ? (
+                <Button
+                  danger
+                  onClick={() =>
+                    deleteUltilities.handleClick({
+                      userId: record.key,
+                      username: record.username,
+                    })
+                  }
+                >
+                  Delete
+                </Button>
+              ) : (
+                <Button disabled>Delete</Button>
+              )}
             </Space>
           )}
         />

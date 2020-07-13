@@ -42,15 +42,6 @@ const failure = (error) => {
   };
 };
 
-// const addNewUser = (data) => {
-//   return {
-//     type: "ADD_NEW_USER",
-//     payload: {
-//       ...data,
-//     },
-//   };
-// };
-
 const addUserFromServer = (data) => {
   return {
     type: "ADD_NEW_USER_FROM_SERVER",
@@ -60,28 +51,32 @@ const addUserFromServer = (data) => {
   };
 };
 
-export const sendLoginRequest = (authInfo) => {
+export const sendLoginRequest = ({ values: authInfo, callback }) => {
   return async (dispatch, getState) => {
     dispatch(setAuthenticating({ ...authInfo }));
     try {
       const resp = await fetchFakeAuth(getState().usr.users, { ...authInfo });
+      callback();
       return dispatch(success(resp.id));
     } catch (error) {
+      callback();
       return dispatch(failure(error));
     }
   };
 };
 
-export const sendSignupRequest = (authInfo) => {
+export const sendSignupRequest = ({ values: authInfo, callback }) => {
   return async (dispatch, getState) => {
     dispatch(setAuthenticating({ ...authInfo }));
     try {
       const resp = await fetchFakeSignUp(getState().usr.users, authInfo);
+      callback();
       return (function () {
         dispatch(success(resp.newUser.id));
         dispatch(addUserFromServer(resp.newUser));
       })();
     } catch (error) {
+      callback();
       return dispatch(failure(error));
     }
   };

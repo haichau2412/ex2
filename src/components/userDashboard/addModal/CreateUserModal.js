@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import { Modal, Button } from "antd";
+import { StyledButton } from "../style";
 import AddForm from "./AddForm";
+import ModalAlert from "../Alert/ModalAlert";
+import useModalMessage from "../Alert/useModalMessage";
 
 const CreateUserModal = () => {
   const [isVisible, setVisible] = useState(false);
+
+  const { message, changeMsg, reset } = useModalMessage();
+
   const showModal = () => {
     setVisible(true);
   };
@@ -17,11 +23,14 @@ const CreateUserModal = () => {
   };
   return (
     <>
-      <Button type='primary' onClick={showModal}>
-        Add User
-      </Button>
+      <StyledButton>
+        <Button type='primary' onClick={showModal}>
+          Add User
+        </Button>
+      </StyledButton>
       <Modal visible={isVisible} onOk={handleOk} onCancel={handleCancel}>
-        <AddForm />
+        <ModalAlert message={message} reset={reset} />
+        <AddForm sucessCallback={handleOk} failCallback={changeMsg} />
       </Modal>
     </>
   );

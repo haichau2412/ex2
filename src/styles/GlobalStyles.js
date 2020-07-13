@@ -13,10 +13,15 @@ const GlobalStyle = createGlobalStyle`
     font-size: 62.5%; 
     }
     body {
+       
         line-height: 1.6rem;
-        min-height: 100vh;
         font-weight: 500;
     }
+
+    #root {
+        min-height:100vh;
+    }
+    
 `;
 
 export default GlobalStyle;

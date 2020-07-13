@@ -11,17 +11,22 @@ function App() {
   return (
     <>
       <Switch>
-        <Route exact path='/'>
-          <Auth authenticated={authenticated} />
-        </Route>
         {authenticated ? (
-          <Route exact path='/users'>
-            <UserDashBoard />
-          </Route>
+          <>
+            <Route exact path='/users'>
+              <UserDashBoard />
+            </Route>
+            <Redirect from='/' to='/users' />
+          </>
         ) : (
-          <Redirect exact from='/users' to='/' />
+          <>
+            <Route exact path='/auth'>
+              <Auth authenticated={authenticated} />
+            </Route>
+            <Redirect from='/' to='/auth' />
+            <Redirect from='/users' to='/auth' />
+          </>
         )}
-
         <Route path='*' render={() => <div> 404 </div>} />
       </Switch>
     </>

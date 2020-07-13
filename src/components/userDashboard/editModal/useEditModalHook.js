@@ -1,14 +1,19 @@
 import { useState } from "react";
 
+import useModalMessage from "../Alert/useModalMessage";
+
 const useEditModalHook = () => {
   const [isVisible, setVisible] = useState(false);
-  const [userId, setUserid] = useState();
+  const [currentUserData, setCurrentUserData] = useState({
+    username: "",
+    phone: "",
+  });
 
-  console.log(userId);
+  const { message, changeMsg, reset } = useModalMessage();
 
-  const handleClick = (userId) => {
+  const handleClick = (userData) => {
     setVisible(true);
-    setUserid(userId);
+    setCurrentUserData(userData);
   };
   const handleOk = (e) => {
     setVisible(false);
@@ -17,12 +22,16 @@ const useEditModalHook = () => {
   const handleCancel = (e) => {
     setVisible(false);
   };
+
   return {
     handleClick,
     isVisible,
-    userId,
+    currentUserData,
     handleOk,
     handleCancel,
+    message,
+    changeMsg,
+    reset,
   };
 };
 

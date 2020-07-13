@@ -3,6 +3,20 @@ export const editUser = "EDIT_USER";
 export const deleteUser = "DELETE_USER";
 export const addUserFromServer = "ADD_NEW_USER_FROM_SERVER";
 
+export const checkAddUser = ({ values, sucessCallback, failCallback }) => {
+  return (dispatch, getState) => {
+    const users = getState().usr.users;
+    const isExist = users.find((user) => user.username === values.username);
+    if (isExist) {
+      failCallback(`Username exists: ${values.username}`);
+      return;
+    } else {
+      sucessCallback();
+      return dispatch({ type: "ADD_NEW_USER", payload: { ...values } });
+    }
+  };
+};
+
 export const checkDeleteCurrentUser = (id) => {
   return (dispatch, getState) => {
     const currentUserId = getState().auth.currentUserId;
@@ -12,11 +26,24 @@ export const checkDeleteCurrentUser = (id) => {
   };
 };
 
-export const checkEditCurrentUser = (data) => {
+export const checkEditCurrentUser = ({
+  values,
+  successCallback,
+  failCallback,
+}) => {
   return (dispatch, getState) => {
     const currentUserId = getState().auth.currentUserId;
-    if (currentUserId === data.id) {
+    const users = getState().usr.users;
+    const isExist = users.find((user) => user.username === values.username);
+
+    if (currentUserId === values.id) {
       return;
-    } else return dispatch({ type: "EDIT_USER", payload: { ...data } });
+    } else if (isExist) {
+      failCallback(`Username exists: ${values.username}`);
+      return;
+    } else {
+      successCallback();
+      return dispatch({ type: "EDIT_USER", payload: { ...values } });
+    }
   };
 };

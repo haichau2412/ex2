@@ -4,7 +4,6 @@ import { StyledAlert } from "./AlertStyle";
 import { useSelector, useDispatch } from "react-redux";
 
 const getError = (state) => {
-  console.log("redux change");
   return state.auth.error;
 };
 

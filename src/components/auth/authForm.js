@@ -1,102 +1,57 @@
-import React, { useCallback, useMemo } from "react";
-import { useFormik } from "formik";
-import validate from "./validators";
-import {
-  FormTitle,
-  InputField,
-  Input,
-  Button,
-  FormContainer,
-  Wrapper,
-  ErrorDiv,
-  NavLink,
-} from "./styles";
-import { useDispatch } from "react-redux";
+import React, { useCallback, useMemo, useState } from "react";
+import { NavLink } from "../form/styles";
+import { useDispatch, useSelector } from "react-redux";
 import { sendRequest } from "../../redux/authentication/actions";
-import { initialValues } from "./ultilities";
-import PropTypes from "prop-types";
+import { valueStandard, buttonText, title, initialValues } from "./ultilities";
+import BasicForm from "../form/BasicForm";
 
-const AuthForm = ({ type, changeType }) => {
+const getAuthenticating = (state) => state.auth.isAuthenticating;
+
+const AuthForm = () => {
+  const [formType, setFormType] = useState("signup");
+
+  const isAuthenticating = useSelector(getAuthenticating);
+
+  const changeFormType = useCallback(() => {
+    formType === "signup" ? setFormType("login") : setFormType("signup");
+  }, [formType]);
+
   const dispatch = useDispatch();
 
   const submitForm = useCallback(
-    (values) => {
-      dispatch(sendRequest[type](values));
+    (values, { setSubmitting }) => {
+      setSubmitting(true);
+      dispatch(
+        sendRequest[formType]({ values, callback: () => setSubmitting(false) })
+      );
     },
-    [type, dispatch]
+    [formType, dispatch]
   );
 
-  const formInitialValues = useMemo(() => initialValues[type], [type]);
-
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: formInitialValues,
-    onSubmit: submitForm,
-    validate,
-  });
-
-  const { errors, handleChange, handleSubmit, values } = formik;
-
-  return (
-    <Wrapper>
-      <FormContainer>
-        <FormTitle>{type === "signup" ? "Sign up" : "Log in"}</FormTitle>
-        <NavLink onClick={changeType}>
-          {type === "signup"
+  const authFormState = useMemo(
+    () => ({
+      initialValues: initialValues[formType],
+      onSubmit: submitForm,
+      title: title[formType],
+      buttonText: buttonText[formType],
+      valueStandard: valueStandard[formType],
+    }),
+    [formType, submitForm]
+  );
+  const FormChangeLink = useMemo(
+    () => (
+      <>
+        <NavLink onClick={changeFormType}>
+          {formType === "signup"
             ? "Have account ? Please log in"
             : "No account ? Please sign up"}
         </NavLink>
-        <form onSubmit={handleSubmit}>
-          <InputField>
-            <Input
-              autocomplete='username'
-              type='text'
-              name='username'
-              onChange={handleChange}
-              value={values.username}
-              placeholder='username'
-            />
-            <ErrorDiv>{errors.username}</ErrorDiv>
-          </InputField>
-          <InputField>
-            <Input
-              autocomplete={
-                type === "signup" ? "new-password" : "current-password"
-              }
-              type='password'
-              name='password'
-              onChange={handleChange}
-              value={values.password}
-              placeholder='password'
-            />
-            <ErrorDiv>{errors.password}</ErrorDiv>
-          </InputField>
-          {type === "signup" ? (
-            <>
-              <InputField>
-                <Input
-                  name='phone'
-                  type='text'
-                  onChange={handleChange}
-                  value={values.phone}
-                  placeholder='phone'
-                />
-                <ErrorDiv>{errors.phone}</ErrorDiv>
-              </InputField>
-            </>
-          ) : null}
-
-          <Button type='submit' style={{ textTransform: "uppercase" }}>
-            {type === "signup" ? "Sign up" : "Log in"}
-          </Button>
-        </form>
-      </FormContainer>
-    </Wrapper>
+        {isAuthenticating ? <div>Authenticating ...</div> : null}
+      </>
+    ),
+    [formType, changeFormType, isAuthenticating]
   );
+  return <BasicForm {...authFormState}>{FormChangeLink}</BasicForm>;
 };
 
 export default AuthForm;
-
-AuthForm.propTypes = {
-  type: PropTypes.oneOf(["signup", "login"]).isRequired,
-};

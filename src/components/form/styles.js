@@ -27,6 +27,7 @@ export const LoadingIcon = styled.div`
   svg {
     width: 100%;
     height: 100%;
+    fill: "#27ae60";
   }
 `;
 
@@ -36,7 +37,6 @@ export const FormContainer = styled.div`
   align-items: center;
   background-color: #fff;
   padding: 2rem 3rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
   font-size: 1.6rem;
 
   form {

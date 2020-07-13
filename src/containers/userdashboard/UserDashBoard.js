@@ -24,7 +24,12 @@ const UserDashBoard = () => {
   };
   return (
     <Layout>
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        style={{ minHeight: "100vh" }}
+      >
         <div className='logo' />
         <Menu theme='dark' mode='inline' defaultSelectedKeys={["1"]}>
           <Menu.Item key='1' icon={<UserOutlined />}>
@@ -33,14 +38,50 @@ const UserDashBoard = () => {
         </Menu>
       </Sider>
       <Layout className='site-layout'>
-        <Header style={{ padding: "0px", background: "#fff" }}>
+        <Header
+          style={{
+            padding: "0px",
+            background: "#fff",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
           {collapsed ? (
-            <MenuUnfoldOutlined className='trigger' onClick={toggle} />
+            <MenuUnfoldOutlined
+              className='trigger'
+              style={{
+                alignSelf: "center",
+                marginLeft: " 1rem",
+              }}
+              onClick={toggle}
+            />
           ) : (
-            <MenuFoldOutlined className='trigger' onClick={toggle} />
+            <MenuFoldOutlined
+              className='trigger'
+              style={{
+                alignSelf: "center",
+                marginLeft: " 1rem",
+              }}
+              onClick={toggle}
+            />
           )}
-          <span>{currentUser}</span>
-          <Button onClick={() => dispatch({ type: "LOG_OUT" })}>Logout </Button>
+          <div>
+            <span
+              style={{
+                marginRight: " 1rem",
+              }}
+            >
+              {currentUser}
+            </span>
+            <Button
+              style={{
+                marginRight: " 1rem",
+              }}
+              onClick={() => dispatch({ type: "LOG_OUT" })}
+            >
+              Logout
+            </Button>
+          </div>
         </Header>
         <UsersContent />
       </Layout>

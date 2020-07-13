@@ -3,26 +3,41 @@ import BasicForm from "../../form/BasicForm";
 import { useDispatch } from "react-redux";
 import { checkEditCurrentUser } from "../../../redux/userManagement/actions";
 
-const EditForm = ({ userId }) => {
+const EditForm = ({
+  userId,
+  username,
+  phone,
+  failCallback,
+  successCallback,
+}) => {
   const dispatch = useDispatch();
-
-  const onSubmit = (values) => {
-    dispatch(checkEditCurrentUser({ id: userId, ...values }));
+  const onSubmit = (values, { setSubmitting }) => {
+    setSubmitting(true);
+    dispatch(
+      checkEditCurrentUser({
+        values: { id: userId, ...values },
+        failCallback,
+        successCallback,
+      })
+    );
+    setSubmitting(false);
   };
 
   const initialValues = {
-    username: "",
-    phone: "",
+    username,
+    phone,
   };
 
   const valueStandard = [
     {
       type: "text",
       name: "username",
+      placeholder: username,
     },
     {
       type: "text",
       name: "phone",
+      placeholder: phone,
     },
   ];
 

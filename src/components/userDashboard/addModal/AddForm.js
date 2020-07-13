@@ -1,12 +1,14 @@
 import React from "react";
 import BasicForm from "../../form/BasicForm";
 import { useDispatch } from "react-redux";
+import { checkAddUser } from "../../../redux/userManagement/actions";
 
-const AddForm = () => {
+const AddForm = ({ sucessCallback, failCallback }) => {
   const dispatch = useDispatch();
 
-  const onSubmit = (values) => {
-    dispatch({ type: "ADD_NEW_USER", payload: { ...values } });
+  const onSubmit = (values, { resetForm }) => {
+    dispatch(checkAddUser({ values, sucessCallback, failCallback }));
+    resetForm();
   };
 
   const initialValues = {
@@ -19,14 +21,17 @@ const AddForm = () => {
     {
       type: "text",
       name: "username",
+      placeholder: "username",
     },
     {
       type: "password",
       name: "password",
+      placeholder: "password",
     },
     {
       type: "text",
       name: "phone",
+      placeholder: "phone",
     },
   ];
 
